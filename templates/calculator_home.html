@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .calculator-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .calculator-header h2 {
+        font-size: 2.5rem;
+        color: #e0e0e0;
+        margin-bottom: 10px;
+    }
+
+    .calculator-header p {
+        font-size: 1.1rem;
+        color: #a0aec0;
+    }
+
+    .calculator-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+        margin-top: 30px;
+    }
+
+    .calculator-card {
+        background: linear-gradient(135deg, #1a2332 0%, #12263a 100%);
+        border: 2px solid #2d3748;
+        border-radius: 15px;
+        padding: 30px 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .calculator-card:hover {
+        transform: translateY(-8px);
+        border-color: #66d9ef;
+        box-shadow: 0 10px 30px rgba(102, 217, 239, 0.3);
+    }
+
+    .calculator-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, #66d9ef, #a78bfa);
+    }
+
+    .calculator-icon {
+        font-size: 3.5rem;
+        margin-bottom: 15px;
+        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+    }
+
+    .calculator-card h3 {
+        color: #66d9ef;
+        font-size: 1.5rem;
+        margin-bottom: 12px;
+        font-weight: 600;
+    }
+
+    .calculator-card .roi-badge {
+        display: inline-block;
+        background-color: #38a169;
+        color: white;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .calculator-card p {
+        color: #cbd5e0;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    .calculator-card .btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 12px 30px;
+        font-weight: 600;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .calculator-card .btn:hover {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    @media (max-width: 768px) {
+        .calculator-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="calculator-header">
+    <h2>💰 Deposit Calculators</h2>
+    <p>Choose a deposit scheme and calculate your potential returns</p>
+</div>
+
+<div class="calculator-grid">
+    <div class="calculator-card">
+        <div class="calculator-icon">🏦</div>
+        <h3>Regular Deposit</h3>
+        <div class="roi-badge">7.0% ROI</div>
+        <p>Standard deposit scheme with steady returns. Perfect for regular savings and long-term growth.</p>
+        <a href="{{ url_for('calculator_scheme', scheme='regular') }}" class="btn btn-primary">Calculate Now</a>
+    </div>
+
+    <div class="calculator-card">
+        <div class="calculator-icon">🔒</div>
+        <h3>Fixed Deposit</h3>
+        <div class="roi-badge">9.0% ROI</div>
+        <p>Lock in your funds for higher returns. Ideal for guaranteed interest over a fixed period.</p>
+        <a href="{{ url_for('calculator_scheme', scheme='fixed') }}" class="btn btn-primary">Calculate Now</a>
+    </div>
+
+    <div class="calculator-card">
+        <div class="calculator-icon">👴</div>
+        <h3>Senior Citizen</h3>
+        <div class="roi-badge">8.5% ROI</div>
+        <p>Special rates for senior citizens. Enhanced returns for retirement planning and security.</p>
+        <a href="{{ url_for('calculator_scheme', scheme='senior') }}" class="btn btn-primary">Calculate Now</a>
+    </div>
+
+    <div class="calculator-card">
+        <div class="calculator-icon">🔄</div>
+        <h3>Recurring Deposit</h3>
+        <div class="roi-badge">7.5% ROI</div>
+        <p>Save monthly and earn interest. Build wealth through disciplined periodic investments.</p>
+        <a href="{{ url_for('calculator_scheme', scheme='recurring') }}" class="btn btn-primary">Calculate Now</a>
+    </div>
+</div>
+
+{% endblock %}

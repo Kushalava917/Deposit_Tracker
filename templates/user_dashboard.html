@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>User Dashboard</h2>
+
+<a href="{{ url_for('user_report') }}" class="btn btn-success mb-3">📄 Download Investment Report (PDF)</a>
+
+<h3>Your Investments</h3>
+<table border="1" cellpadding="6">
+    <tr>
+        <th>Amount</th>
+        <th>ROI (%)</th>
+        <th>Duration (months)</th>
+        <th>Start Date</th>
+    </tr>
+    {% for i in investments %}
+    <tr>
+        <td>{{ i.amount }}</td>
+        <td>{{ i.roi }}</td>
+        <td>{{ i.duration_months }}</td>
+        <td>{{ i.start_date }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<hr>
+<h3>Investment Summary</h3>
+<p>Total Invested: ₹{{ total_investment }}</p>
+<p>Total Interest: ₹{{ total_interest | round(2) }}</p>
+<p>Total Maturity: ₹{{ total_maturity | round(2) }}</p>
+
+{% if investments|length > 0 %}
+<canvas id="growthChart" width="300" height="300"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    (function () {
+        const canvas = document.getElementById('growthChart');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+
+        // Emit chart data as a single JSON array to ensure valid JS after rendering.
+        const chartData = JSON.parse('{{ [total_investment | default(0), total_interest | default(0) | round(2)] | tojson }}');
+
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Principal', 'Interest'],
+                datasets: [{
+                    data: chartData,
+                    backgroundColor: ['#3498db', '#2ecc71']
+                }]
+            },
+            options: {
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
+                },
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    })();
+</script>
+{% else %}
+<p>No investments to display.</p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card p-4">
+    <h2 class="text-center text-info">📊 Admin Analytics Dashboard</h2>
+    <hr>
+
+    <div class="row text-center">
+        <div class="col-md-4">
+            <h4>Total Users</h4>
+            <p class="fs-3 text-warning">{{ total_users }}</p>
+        </div>
+        <div class="col-md-4">
+            <h4>Total Investments</h4>
+            <p class="fs-3 text-success">₹{{ total_investments }}</p>
+        </div>
+        <div class="col-md-4">
+            <h4>Average ROI</h4>
+            <p class="fs-3 text-info">{{ avg_roi }}%</p>
+        </div>
+    </div>
+
+    <hr>
+    <h4 class="text-center mt-4">Total Projected Maturity Value</h4>
+    <h3 class="text-center text-success">₹{{ total_maturity }}</h3>
+
+    <div class="chart-container mt-4">
+        <canvas id="adminChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    (function () {
+        const canvas = document.getElementById('adminChart');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+
+        // Serialize data as a single JSON array to ensure valid JS after rendering.
+        const chartData = JSON.parse('{{ [total_investments | default(0), total_maturity | default(0)] | tojson }}');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Total Investment', 'Projected Maturity'],
+                datasets: [{
+                    label: 'Amount (₹)',
+                    data: chartData,
+                    backgroundColor: ['#1abc9c', '#f39c12']
+                }]
+            },
+            options: {
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
+                },
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    })();
+</script>
+{% endblock %}
