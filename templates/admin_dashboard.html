@@ -1,27 +1,77 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Admin Dashboard</h2>
-<p>Welcome, Admin!</p>
-<a href="{{ url_for('create_user') }}">➕ Create New User</a>
-<hr>
 
-<h3>Registered Users</h3>
-<table border="1" cellpadding="6">
-    <tr>
-        <th>ID</th>
-        <th>Username</th>
-        <th>Role</th>
-        <th>Actions</th>
-    </tr>
-    {% for user in users %}
-    <tr>
-        <td>{{ user.id }}</td>
-        <td>{{ user.username }}</td>
-        <td>{{ user.role }}</td>
-        <td>
-            <a href="{{ url_for('add_deposit', user_id=user.id) }}">💰 Add Deposit</a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h2><i class="bi bi-speedometer2"></i> Admin Dashboard</h2>
+            <p>Manage users and their investments</p>
+        </div>
+        <a href="{{ url_for('create_user') }}" class="btn btn-primary">
+            <i class="bi bi-person-plus"></i> Create New User
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-people-fill"></i> User Management
+            </div>
+            <div class="card-body">
+                {% if users|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th><i class="bi bi-hash"></i> #</th>
+                                <th><i class="bi bi-person"></i> Username</th>
+                                <th><i class="bi bi-shield-check"></i> Role</th>
+                                <th><i class="bi bi-wallet2"></i> Total Investments</th>
+                                <th class="text-center"><i class="bi bi-tools"></i> Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>
+                                    <strong>{{ user.username }}</strong>
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary">{{ user.role }}</span>
+                                </td>
+                                <td>
+                                    {% if user.investments %}
+                                    <span class="badge bg-success">{{ user.investments|length }} Deposits</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">No Deposits</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <a href="{{ url_for('add_deposit', user_id=user.id) }}"
+                                        class="btn btn-sm btn-primary">
+                                        <i class="bi bi-plus-circle"></i> Add Deposit
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox" style="font-size: 3rem; color: var(--text-secondary);"></i>
+                    <p class="mt-3 text-secondary">No users found. Create your first user to get started.</p>
+                    <a href="{{ url_for('create_user') }}" class="btn btn-primary mt-2">
+                        <i class="bi bi-person-plus"></i> Create User
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
