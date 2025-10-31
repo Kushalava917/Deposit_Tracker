@@ -1,234 +1,113 @@
 {% extends "base.html" %}
 {% block content %}
-<style>
-    .calc-container {
-        max-width: 900px;
-        margin: 0 auto;
-    }
 
-    .calc-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 30px;
-        border-radius: 15px;
-        text-align: center;
-        margin-bottom: 30px;
-        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-    }
+<div class="container" style="max-width: 900px;">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('calculator_home') }}"><i class="bi bi-arrow-left"></i> All
+                    Calculators</a></li>
+            <li class="breadcrumb-item active">{{ scheme }} Deposit</li>
+        </ol>
+    </nav>
 
-    .calc-header h2 {
-        color: white;
-        font-size: 2rem;
-        margin: 0 0 10px 0;
-    }
-
-    .calc-header .roi-display {
-        background-color: rgba(255, 255, 255, 0.2);
-        display: inline-block;
-        padding: 8px 20px;
-        border-radius: 25px;
-        color: white;
-        font-size: 1.1rem;
-        font-weight: 600;
-    }
-
-    .calc-form-card {
-        background-color: #12263a;
-        border: 2px solid #2d3748;
-        border-radius: 15px;
-        padding: 35px;
-        margin-bottom: 30px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    }
-
-    .calc-form-card label {
-        display: block;
-        color: #cbd5e0;
-        font-weight: 600;
-        margin-bottom: 8px;
-        font-size: 1rem;
-    }
-
-    .calc-form-card input {
-        width: 100%;
-        padding: 14px 18px;
-        background-color: #1a2332;
-        border: 2px solid #2d3748;
-        border-radius: 10px;
-        color: #e0e0e0;
-        font-size: 1rem;
-        margin-bottom: 20px;
-        transition: all 0.3s ease;
-    }
-
-    .calc-form-card input:focus {
-        outline: none;
-        border-color: #66d9ef;
-        box-shadow: 0 0 0 3px rgba(102, 217, 239, 0.1);
-    }
-
-    .calc-form-card button {
-        width: 100%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 16px;
-        border: none;
-        border-radius: 10px;
-        font-size: 1.1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        margin-top: 10px;
-    }
-
-    .calc-form-card button:hover {
-        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-    }
-
-    .results-section {
-        background-color: #12263a;
-        border: 2px solid #38a169;
-        border-radius: 15px;
-        padding: 30px;
-        margin-top: 30px;
-        box-shadow: 0 5px 15px rgba(56, 161, 105, 0.2);
-    }
-
-    .results-section h3 {
-        color: #66d9ef;
-        font-size: 1.8rem;
-        margin-top: 0;
-        margin-bottom: 25px;
-        text-align: center;
-        border-bottom: 2px solid #2d3748;
-        padding-bottom: 15px;
-    }
-
-    .results-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 20px;
-        margin-bottom: 30px;
-    }
-
-    .result-item {
-        background-color: #1a2332;
-        padding: 20px;
-        border-radius: 10px;
-        border: 2px solid #2d3748;
-        text-align: center;
-        transition: all 0.3s ease;
-    }
-
-    .result-item:hover {
-        border-color: #66d9ef;
-        transform: translateY(-3px);
-    }
-
-    .result-item label {
-        display: block;
-        color: #a0aec0;
-        font-size: 0.9rem;
-        margin-bottom: 8px;
-        text-transform: uppercase;
-        font-weight: 600;
-    }
-
-    .result-item .value {
-        color: #e0e0e0;
-        font-size: 1.6rem;
-        font-weight: bold;
-    }
-
-    .result-item.highlight .value {
-        color: #38a169;
-    }
-
-    .chart-wrapper {
-        background-color: #1a2332;
-        padding: 30px;
-        border-radius: 10px;
-        margin-top: 20px;
-        text-align: center;
-    }
-
-    .chart-wrapper canvas {
-        max-width: 350px;
-        margin: 0 auto;
-    }
-
-    .back-link {
-        display: inline-block;
-        margin-bottom: 20px;
-        color: #66d9ef;
-        text-decoration: none;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-    }
-
-    .back-link:hover {
-        color: #f1c40f;
-        transform: translateX(-5px);
-    }
-
-    @media (max-width: 768px) {
-        .calc-form-card {
-            padding: 25px;
-        }
-
-        .results-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
-
-<div class="calc-container">
-    <a href="{{ url_for('calculator_home') }}" class="back-link">← Back to Calculators</a>
-
-    <div class="calc-header">
-        <h2>{{ scheme }} Calculator</h2>
-        <div class="roi-display">📈 Interest Rate: {{ roi }}% p.a.</div>
+    <div class="card mb-4"
+        style="background: linear-gradient(135deg, var(--primary-color), var(--primary-hover)); border: none;">
+        <div class="card-body text-center text-white py-4">
+            <h2 class="mb-2" style="color: white;"><i class="bi bi-calculator-fill"></i> {{ scheme }} Deposit Calculator
+            </h2>
+            <div class="d-inline-block px-4 py-2 rounded" style="background-color: rgba(255, 255, 255, 0.2);">
+                <i class="bi bi-graph-up-arrow"></i> <strong>Interest Rate: {{ roi }}% p.a.</strong>
+            </div>
+        </div>
     </div>
 
-    <div class="calc-form-card">
-        <form method="POST">
-            <label for="amount">💰 Investment Amount (₹)</label>
-            <input type="number" id="amount" name="amount" min="1000" step="100" placeholder="Enter amount in rupees"
-                required>
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="bi bi-pencil-square"></i> Enter Investment Details
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="mb-4">
+                    <label for="amount" class="form-label">
+                        <i class="bi bi-cash-stack"></i> Investment Amount
+                    </label>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text">₹</span>
+                        <input type="number" class="form-control" id="amount" name="amount" min="1000" step="100"
+                            placeholder="Enter amount" required>
+                    </div>
+                    <small class="text-secondary">Minimum: ₹1,000</small>
+                </div>
 
-            <label for="months">📅 Investment Duration (Months)</label>
-            <input type="number" id="months" name="months" min="1" max="120" placeholder="Enter duration in months"
-                required>
+                <div class="mb-4">
+                    <label for="months" class="form-label">
+                        <i class="bi bi-calendar-range"></i> Investment Duration
+                    </label>
+                    <div class="input-group input-group-lg">
+                        <input type="number" class="form-control" id="months" name="months" min="1" max="120"
+                            placeholder="Enter duration" required>
+                        <span class="input-group-text">Months</span>
+                    </div>
+                    <small class="text-secondary">Maximum: 120 months (10 years)</small>
+                </div>
 
-            <button type="submit">🧮 Calculate Returns</button>
-        </form>
+                <button type="submit" class="btn btn-primary btn-lg w-100">
+                    <i class="bi bi-calculator-fill"></i> Calculate Returns
+                </button>
+            </form>
+        </div>
     </div>
 
     {% if result %}
-    <div class="results-section">
-        <h3>📊 Investment Projection</h3>
-
-        <div class="results-grid">
-            <div class="result-item">
-                <label>Principal Amount</label>
-                <div class="value">₹{{ result.amount }}</div>
-            </div>
-
-            <div class="result-item highlight">
-                <label>Interest Earned</label>
-                <div class="value">₹{{ result.interest | round(2) }}</div>
-            </div>
-
-            <div class="result-item">
-                <label>Maturity Value</label>
-                <div class="value">₹{{ result.maturity | round(2) }}</div>
-            </div>
+    <div class="card border-success">
+        <div class="card-header bg-success text-white">
+            <i class="bi bi-check-circle-fill"></i> Investment Projection Results
         </div>
+        <div class="card-body">
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="text-center p-4 rounded" style="background-color: var(--light-bg);">
+                        <div class="text-secondary mb-2 text-uppercase small fw-semibold">
+                            <i class="bi bi-wallet2"></i> Principal Amount
+                        </div>
+                        <div class="h3 fw-bold text-primary mb-0">₹{{ "{:,.2f}".format(result.amount) }}</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center p-4 rounded" style="background-color: var(--light-bg);">
+                        <div class="text-secondary mb-2 text-uppercase small fw-semibold">
+                            <i class="bi bi-graph-up"></i> Interest Earned
+                        </div>
+                        <div class="h3 fw-bold text-success mb-0">₹{{ "{:,.2f}".format(result.interest) }}</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center p-4 rounded"
+                        style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white;">
+                        <div class="mb-2 text-uppercase small fw-semibold" style="color: rgba(255,255,255,0.9);">
+                            <i class="bi bi-trophy-fill"></i> Maturity Value
+                        </div>
+                        <div class="h3 fw-bold mb-0" style="color: white;">₹{{ "{:,.2f}".format(result.maturity) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <div class="chart-wrapper">
-            <canvas id="calcChart" width="300" height="300"
-                data-chart='{{ [result.amount | default(0), (result.interest | default(0) | round(2))] | tojson }}'></canvas>
+            <div class="row">
+                <div class="col-md-6 mx-auto">
+                    <div class="chart-container">
+                        <canvas id="calcChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-4 mb-0">
+                <i class="bi bi-info-circle-fill"></i>
+                <strong>Summary:</strong> Your investment of ₹{{ "{:,.2f}".format(result.amount) }} for {{
+                result.months }} months at {{ roi }}% p.a.
+                will earn ₹{{ "{:,.2f}".format(result.interest) }} in interest, resulting in a total maturity value
+                of ₹{{ "{:,.2f}".format(result.maturity) }}.
+            </div>
         </div>
     </div>
 
@@ -238,36 +117,55 @@
             const canvas = document.getElementById('calcChart');
             if (!canvas) return;
 
-            let chartData = [0, 0];
-            try {
-                chartData = JSON.parse(canvas.getAttribute('data-chart') || '[0,0]');
-            } catch (e) {
-                chartData = [0, 0];
-                console.error('Failed to parse chart data', e);
-            }
+            const chartData = JSON.parse('{{ [result.amount | default(0), result.interest | default(0) | round(2)] | tojson }}');
 
             const ctx = canvas.getContext('2d');
             new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Principal', 'Interest'],
+                    labels: ['Principal Amount', 'Interest Earned'],
                     datasets: [{
                         data: chartData,
-                        backgroundColor: ['#667eea', '#38a169']
+                        backgroundColor: ['#2563eb', '#10b981'],
+                        borderWidth: 0,
+                        hoverOffset: 10
                     }]
                 },
                 options: {
-                    animation: {
-                        animateScale: true,
-                        animateRotate: true
-                    },
+                    responsive: true,
+                    maintainAspectRatio: true,
                     plugins: {
                         legend: {
                             position: 'bottom',
                             labels: {
-                                color: '#e0e0e0',
-                                font: { size: 14 },
-                                padding: 15
+                                padding: 20,
+                                font: {
+                                    size: 13,
+                                    family: 'Inter'
+                                },
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleFont: {
+                                size: 14,
+                                family: 'Inter'
+                            },
+                            bodyFont: {
+                                size: 13,
+                                family: 'Inter'
+                            },
+                            callbacks: {
+                                label: function (context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ₹' + context.parsed.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                                    }
+                                    return label;
+                                }
                             }
                         }
                     }

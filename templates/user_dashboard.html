@@ -1,35 +1,88 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>User Dashboard</h2>
 
-<a href="{{ url_for('user_report') }}" class="btn btn-success mb-3">📄 Download Investment Report (PDF)</a>
+<div class="page-header">
+    <h2><i class="bi bi-wallet2"></i> Investment Portfolio</h2>
+    <p>Track and manage your investments</p>
+</div>
 
-<h3>Your Investments</h3>
-<table border="1" cellpadding="6">
-    <tr>
-        <th>Amount</th>
-        <th>ROI (%)</th>
-        <th>Duration (months)</th>
-        <th>Start Date</th>
-    </tr>
-    {% for i in investments %}
-    <tr>
-        <td>{{ i.amount }}</td>
-        <td>{{ i.roi }}</td>
-        <td>{{ i.duration_months }}</td>
-        <td>{{ i.start_date }}</td>
-    </tr>
-    {% endfor %}
-</table>
+<div class="row mb-4">
+    <div class="col-md-4 mb-3">
+        <div class="stat-card">
+            <h3>Total Invested</h3>
+            <div class="value">₹{{ "{:,.2f}".format(total_investment) }}</div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="stat-card" style="background: linear-gradient(135deg, #10b981, #059669);">
+            <h3>Total Interest</h3>
+            <div class="value">₹{{ "{:,.2f}".format(total_interest) }}</div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="stat-card" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+            <h3>Total Maturity</h3>
+            <div class="value">₹{{ "{:,.2f}".format(total_maturity) }}</div>
+        </div>
+    </div>
+</div>
 
-<hr>
-<h3>Investment Summary</h3>
-<p>Total Invested: ₹{{ total_investment }}</p>
-<p>Total Interest: ₹{{ total_interest | round(2) }}</p>
-<p>Total Maturity: ₹{{ total_maturity | round(2) }}</p>
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-list-ul"></i> Your Investments</span>
+        <a href="{{ url_for('user_report') }}" class="btn btn-success btn-sm">
+            <i class="bi bi-file-earmark-pdf"></i> Download PDF Report
+        </a>
+    </div>
+    <div class="card-body">
+        {% if investments|length > 0 %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th><i class="bi bi-hash"></i> #</th>
+                        <th><i class="bi bi-cash-stack"></i> Amount</th>
+                        <th><i class="bi bi-percent"></i> ROI</th>
+                        <th><i class="bi bi-clock-history"></i> Duration</th>
+                        <th><i class="bi bi-calendar-check"></i> Start Date</th>
+                        <th><i class="bi bi-calculator"></i> Maturity Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in investments %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td><strong>₹{{ "{:,.2f}".format(i.amount) }}</strong></td>
+                        <td><span class="badge bg-success">{{ i.roi }}%</span></td>
+                        <td>{{ i.duration_months }} months</td>
+                        <td>{{ i.start_date }}</td>
+                        <td><strong>₹{{ "{:,.2f}".format(i.amount * (1 + (i.roi * (i.duration_months / 12) / 100)))
+                                }}</strong></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-inbox" style="font-size: 3rem; color: var(--text-secondary);"></i>
+            <p class="mt-3 text-secondary">No investments to display.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
 
 {% if investments|length > 0 %}
-<canvas id="growthChart" width="300" height="300"></canvas>
+<div class="card">
+    <div class="card-header">
+        <i class="bi bi-pie-chart"></i> Investment Distribution
+    </div>
+    <div class="card-body">
+        <div class="chart-container">
+            <canvas id="growthChart"></canvas>
+        </div>
+    </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -38,32 +91,61 @@
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
 
-        // Emit chart data as a single JSON array to ensure valid JS after rendering.
         const chartData = JSON.parse('{{ [total_investment | default(0), total_interest | default(0) | round(2)] | tojson }}');
 
         new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Principal', 'Interest'],
+                labels: ['Principal Amount', 'Interest Earned'],
                 datasets: [{
                     data: chartData,
-                    backgroundColor: ['#3498db', '#2ecc71']
+                    backgroundColor: ['#2563eb', '#10b981'],
+                    borderWidth: 0,
+                    hoverOffset: 10
                 }]
             },
             options: {
-                animation: {
-                    animateScale: true,
-                    animateRotate: true
-                },
+                responsive: true,
+                maintainAspectRatio: true,
                 plugins: {
-                    legend: { position: 'bottom' }
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            font: {
+                                size: 13,
+                                family: 'Inter'
+                            },
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: {
+                            size: 14,
+                            family: 'Inter'
+                        },
+                        bodyFont: {
+                            size: 13,
+                            family: 'Inter'
+                        },
+                        callbacks: {
+                            label: function (context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ₹' + context.parsed.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                                }
+                                return label;
+                            }
+                        }
+                    }
                 }
             }
         });
     })();
 </script>
-{% else %}
-<p>No investments to display.</p>
 {% endif %}
 
 {% endblock %}

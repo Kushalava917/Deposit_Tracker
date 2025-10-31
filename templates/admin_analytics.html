@@ -1,30 +1,52 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="card p-4">
-    <h2 class="text-center text-info">📊 Admin Analytics Dashboard</h2>
-    <hr>
 
-    <div class="row text-center">
-        <div class="col-md-4">
-            <h4>Total Users</h4>
-            <p class="fs-3 text-warning">{{ total_users }}</p>
-        </div>
-        <div class="col-md-4">
-            <h4>Total Investments</h4>
-            <p class="fs-3 text-success">₹{{ total_investments }}</p>
-        </div>
-        <div class="col-md-4">
-            <h4>Average ROI</h4>
-            <p class="fs-3 text-info">{{ avg_roi }}%</p>
+<div class="page-header">
+    <h2><i class="bi bi-graph-up-arrow"></i> Analytics Dashboard</h2>
+    <p>Overview of investment performance and statistics</p>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <h3><i class="bi bi-people-fill"></i> Total Users</h3>
+            <div class="value">{{ total_users }}</div>
         </div>
     </div>
+    <div class="col-md-4">
+        <div class="stat-card" style="background: linear-gradient(135deg, #10b981, #059669);">
+            <h3><i class="bi bi-cash-stack"></i> Total Investments</h3>
+            <div class="value">₹{{ "{:,.2f}".format(total_investments) }}</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+            <h3><i class="bi bi-percent"></i> Average ROI</h3>
+            <div class="value">{{ avg_roi }}%</div>
+        </div>
+    </div>
+</div>
 
-    <hr>
-    <h4 class="text-center mt-4">Total Projected Maturity Value</h4>
-    <h3 class="text-center text-success">₹{{ total_maturity }}</h3>
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="bi bi-trophy-fill"></i> Projected Maturity Value
+    </div>
+    <div class="card-body text-center">
+        <h3 class="display-4 fw-bold mb-0" style="color: var(--success-color);">
+            ₹{{ "{:,.2f}".format(total_maturity) }}
+        </h3>
+        <p class="text-secondary mt-2">Total expected returns at maturity</p>
+    </div>
+</div>
 
-    <div class="chart-container mt-4">
-        <canvas id="adminChart"></canvas>
+<div class="card">
+    <div class="card-header">
+        <i class="bi bi-bar-chart-fill"></i> Investment vs Maturity Comparison
+    </div>
+    <div class="card-body">
+        <div class="chart-container" style="max-width: 700px;">
+            <canvas id="adminChart"></canvas>
+        </div>
     </div>
 </div>
 
@@ -35,7 +57,6 @@
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
 
-        // Serialize data as a single JSON array to ensure valid JS after rendering.
         const chartData = JSON.parse('{{ [total_investments | default(0), total_maturity | default(0)] | tojson }}');
 
         new Chart(ctx, {
@@ -45,22 +66,66 @@
                 datasets: [{
                     label: 'Amount (₹)',
                     data: chartData,
-                    backgroundColor: ['#1abc9c', '#f39c12']
+                    backgroundColor: ['#2563eb', '#10b981'],
+                    borderRadius: 8,
+                    borderWidth: 0
                 }]
             },
             options: {
-                animation: {
-                    animateScale: true,
-                    animateRotate: true
-                },
+                responsive: true,
+                maintainAspectRatio: true,
                 plugins: {
-                    legend: { display: false }
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: {
+                            size: 14,
+                            family: 'Inter'
+                        },
+                        bodyFont: {
+                            size: 13,
+                            family: 'Inter'
+                        },
+                        callbacks: {
+                            label: function (context) {
+                                return 'Amount: ₹' + context.parsed.y.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                            }
+                        }
+                    }
                 },
                 scales: {
-                    y: { beginAtZero: true }
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function (value) {
+                                return '₹' + value.toLocaleString('en-IN');
+                            },
+                            font: {
+                                family: 'Inter'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: {
+                                family: 'Inter',
+                                weight: '500'
+                            }
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
                 }
             }
         });
     })();
 </script>
+
 {% endblock %}
