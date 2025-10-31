@@ -245,6 +245,14 @@ def create_user():
 
 
 # ---------- SETUP ROUTE ----------
+@app.route("/init-db")
+def init_db():
+    from flask import jsonify
+    with app.app_context():
+        db.create_all()
+    return jsonify({"status": "✅ Tables created successfully"})
+
+
 @app.route("/create-admin")
 def create_admin():
     existing = User.query.filter_by(username="admin").first()
