@@ -1,280 +1,245 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
+    <title>Investment Report</title>
     <style>
-        @page {
-            size: A4;
-            margin: 2cm;
-        }
-
+        /* ---------- GLOBAL STYLES ---------- */
         body {
-            font-family: Arial, Helvetica, sans-serif;
-            color: #333;
-            line-height: 1.5;
-            font-size: 11pt;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            margin: 40px;
+            background: #ffffff;
+            color: #222;
+            font-size: 14px;
         }
 
         .header {
             text-align: center;
-            background-color: #4a5568;
-            color: white;
-            padding: 25px;
-            margin-bottom: 25px;
+            border-bottom: 2px solid #0b4a92;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
         }
 
         .header h1 {
-            margin: 0 0 8px 0;
-            font-size: 24pt;
-            font-weight: bold;
+            color: #0b4a92;
+            font-size: 26px;
+            margin: 0;
         }
 
         .header p {
-            margin: 3px 0;
-            font-size: 10pt;
+            color: #555;
+            margin: 4px 0 0;
         }
 
-        .summary-section {
+        /* ---------- USER SECTION ---------- */
+        .user-section {
             margin-bottom: 25px;
-            page-break-inside: avoid;
+            background: #f9fafb;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
         }
 
-        .summary-grid {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        .summary-grid td {
-            width: 33.33%;
-            padding: 15px;
-            text-align: center;
-            border: 2px solid #4a5568;
-            background-color: #f7fafc;
-        }
-
-        .summary-grid .label {
-            font-size: 9pt;
-            color: #4a5568;
-            font-weight: bold;
-            text-transform: uppercase;
-            display: block;
+        .user-section h2 {
+            font-size: 18px;
+            color: #0b4a92;
             margin-bottom: 8px;
         }
 
-        .summary-grid .value {
-            font-size: 18pt;
-            font-weight: bold;
-            color: #2d3748;
+        .user-section p {
+            margin: 4px 0;
         }
 
-        .summary-grid .highlight {
-            color: #38a169;
+        /* ---------- IMPROVED TABLE STYLES ---------- */
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 6px 18px rgba(11, 74, 146, 0.03);
+            margin-top: 20px;
         }
 
-        .section-title {
-            background-color: #4a5568;
-            color: white;
-            padding: 10px 12px;
-            margin: 20px 0 12px 0;
-            font-size: 13pt;
-            font-weight: bold;
-        }
-
-        table.data-table {
+        .investment-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 15px 0;
-            page-break-inside: auto;
+            min-width: 720px;
+            font-size: 14px;
+            background: #fff;
         }
 
-        table.data-table th {
-            background-color: #4a5568;
-            color: white;
-            padding: 10px 8px;
-            text-align: center;
+        .investment-table th,
+        .investment-table td {
+            padding: 28px 24px 20px 24px;
+            /* ↑ More space above values */
+            border-bottom: 1px solid #eef2f6;
+            vertical-align: top;
+            /* Align text toward top but keep spacing */
+        }
+
+        .investment-table th {
+            background: #f6f9fc;
+            color: #0b4a92;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 12.5px;
+            letter-spacing: 0.04em;
+            position: sticky;
+            top: 0;
+            z-index: 3;
+            padding-top: 18px;
+            padding-bottom: 14px;
+            vertical-align: middle;
+        }
+
+        .investment-table td {
+            color: #333;
+            line-height: 2.3;
+            /* Slightly taller lines for smoother look */
+            min-height: 120px;
+            /* Extra height ensures generous spacing */
+        }
+
+        .investment-table td.numeric {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+
+        .investment-table tr:nth-child(even) td {
+            background: #fbfcfd;
+        }
+
+        .investment-table tr:hover td {
+            background: #f8fbff;
+        }
+
+        /* Optional horizontal separators between rows */
+        .investment-table tr+tr td {
+            border-top: 2px solid #f3f5f8;
+        }
+
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 600px) {
+
+            .investment-table th,
+            .investment-table td {
+                padding: 20px 16px;
+            }
+
+            .investment-table {
+                font-size: 13px;
+            }
+        }
+
+        /* ---------- SUMMARY SECTION ---------- */
+        .summary {
+            margin-top: 30px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            padding: 20px 24px;
+            border-radius: 10px;
+        }
+
+        .summary h3 {
+            margin-top: 0;
+            color: #0b4a92;
+            font-size: 17px;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: separate;
+            margin-top: 10px;
+        }
+
+        .summary-table td {
+            padding: 10px 12px;
+            font-size: 14px;
+        }
+
+        .summary-table td:first-child {
+            color: #555;
+            width: 70%;
+        }
+
+        .summary-table td:last-child {
             font-weight: bold;
-            font-size: 9pt;
-            border: 1px solid #2d3748;
+            text-align: right;
+            white-space: nowrap;
         }
 
-        table.data-table td {
-            border: 1px solid #cbd5e0;
-            padding: 8px;
-            text-align: center;
-            font-size: 9pt;
-        }
-
-        table.data-table tr:nth-child(even) {
-            background-color: #f7fafc;
-        }
-
-        table.data-table tr:nth-child(odd) {
-            background-color: white;
-        }
-
-        table.data-table .amount-col {
-            font-weight: bold;
-            color: #38a169;
-        }
-
-        .insights-box {
-            background-color: #edf2f7;
-            border-left: 4px solid #4a5568;
-            padding: 15px;
-            margin: 20px 0;
-            page-break-inside: avoid;
-        }
-
-        .insights-box h3 {
-            margin: 0 0 12px 0;
-            color: #2d3748;
-            font-size: 13pt;
-        }
-
-        .insights-box p {
-            margin: 8px 0;
-            font-size: 10pt;
-            line-height: 1.6;
-        }
-
-        .insights-box strong {
-            color: #2d3748;
-        }
-
-        .insights-box .value {
-            color: #38a169;
-            font-weight: bold;
-        }
-
-        .summary-text {
-            margin: 15px 0;
-            padding: 12px;
-            background-color: #f7fafc;
-            border: 1px solid #cbd5e0;
-            font-size: 10pt;
-            line-height: 1.7;
-            page-break-inside: avoid;
-        }
-
+        /* ---------- FOOTER ---------- */
         .footer {
             text-align: center;
-            margin-top: 30px;
-            padding-top: 15px;
-            border-top: 2px solid #cbd5e0;
-            color: #718096;
-            font-size: 9pt;
-        }
-
-        .footer p {
-            margin: 4px 0;
+            margin-top: 40px;
+            padding-top: 10px;
+            font-size: 12px;
+            color: #777;
+            border-top: 1px solid #e5e7eb;
         }
     </style>
 </head>
 
 <body>
+
     <div class="header">
-        <p>Investment Portfolio Report</p>
-        <p>Account Holder: {{ user.username }}</p>
-        <p>Report Generated: {{ now.strftime('%B %d, %Y') }}</p>
+        <h1>Investment Summary Report</h1>
+        <p>Generated on {{ now.strftime('%d %B %Y, %I:%M %p') }}</p>
     </div>
 
-    <div class="summary-section">
-        <table class="summary-grid">
+    <div class="user-section">
+        <h2>Account Holder: {{ user.username }}</h2>
+        <p><strong>User ID:</strong> {{ user.id }}</p>
+    </div>
+
+    <div class="table-wrap">
+        <table class="investment-table">
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th class="numeric">Amount</th>
+                    <th class="numeric">ROI (%)</th>
+                    <th class="numeric">Duration (Months)</th>
+                    <th>Start Date</th>
+                    <th class="numeric">Expected Maturity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inv in investments %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td class="numeric">{{ "%.2f"|format(inv.amount) }}</td>
+                    <td class="numeric">{{ inv.roi }}</td>
+                    <td class="numeric">{{ inv.duration_months }}</td>
+                    <td>{{ inv.start_date }}</td>
+                    <td class="numeric">
+                        {{ "%.2f"|format(inv.amount * (1 + (inv.roi * (inv.duration_months / 12) / 100))) }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="summary">
+        <h3>Portfolio Summary</h3>
+        <table class="summary-table">
             <tr>
-                <td>
-                    <span class="label">Total Invested</span>
-                    <span class="value">{{ total_investment | round(2) }}</span>
-                </td>
-                <td>
-                    <span class="label">Interest Earned</span>
-                    <span class="value highlight">{{ total_interest | round(2) }}</span>
-                </td>
-                <td>
-                    <span class="label">Maturity Value</span>
-                    <span class="value">{{ total_maturity | round(2) }}</span>
-                </td>
+                <td>Total Investment:</td>
+                <td> {{ "%.2f"|format(total_investment) }}</td>
+            </tr>
+            <tr>
+                <td>Total Interest Earned:</td>
+                <td> {{ "%.2f"|format(total_interest) }}</td>
+            </tr>
+            <tr>
+                <td><strong>Total Maturity Value:</strong></td>
+                <td><strong> {{ "%.2f"|format(total_maturity) }}</strong></td>
             </tr>
         </table>
     </div>
 
-    <div class="section-title">Investment Portfolio Details</div>
-
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>Amount</th>
-                <th>ROI (%)</th>
-                <th>Duration</th>
-                <th>Start Date</th>
-                <th>Interest</th>
-                <th>Maturity</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for i in investments %}
-            {% set inv_interest = i.amount * (i.roi / 100) * (i.duration_months / 12) %}
-            {% set inv_maturity = i.amount + inv_interest %}
-            <tr>
-                <td>{{ i.amount | round(2) }}</td>
-                <td>{{ i.roi }}</td>
-                <td>{{ i.duration_months }}m</td>
-                <td>{{ i.start_date }}</td>
-                <td class="amount-col">{{ inv_interest | round(2) }}</td>
-                <td>{{ inv_maturity | round(2) }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <div class="section-title">Financial Insights &amp; Performance Metrics</div>
-
-    <div class="insights-box">
-        {% if investments|length > 0 %}
-        {% set avg_duration = (investments | sum(attribute='duration_months')) / (investments | length) %}
-        {% set total_months = investments | sum(attribute='duration_months') %}
-        {% set avg_monthly_earnings = total_interest / total_months if total_months > 0 else 0 %}
-        {% set total_roi_pct = ((total_interest / total_investment) * 100) if total_investment > 0 else 0 %}
-
-        <p><strong>Total Active Investments:</strong> {{ investments|length }} investment(s)</p>
-        <p><strong>Average Investment Duration:</strong> {{ avg_duration | round(1) }} months</p>
-        <p><strong>Average Monthly Interest:</strong> <span class="value">{{ avg_monthly_earnings | round(2) }}</span>
-        </p>
-        <p><strong>Overall Return on Investment:</strong> <span class="value">{{ total_roi_pct | round(2) }}%</span>
-        </p>
-        <p><strong>Projected Annual Returns:</strong> <span class="value">{{ (avg_monthly_earnings * 12) | round(2)
-                }}</span></p>
-        {% else %}
-        <p>No active investments found. Start investing today to grow your wealth!</p>
-        {% endif %}
-    </div>
-
-    <div class="section-title">Investment Summary</div>
-
-    <div class="summary-text">
-        <p>
-            <strong>Portfolio Overview:</strong> This report summarizes your investment portfolio with NOVA Finance
-            Portal.
-            You have invested a total of <strong>₹{{ total_investment | round(2) }}</strong> distributed across
-            <strong>{{ investments|length }}</strong> investment instrument(s).
-        </p>
-        <p>
-            <strong>Returns Analysis:</strong> Your portfolio is projected to generate
-            <strong style="color: #38a169;">{{ total_interest | round(2) }}</strong> in interest earnings, resulting
-            in a total maturity value of <strong>{{ total_maturity | round(2) }}</strong>. This represents an overall
-            return of
-            <strong>{{ ((total_interest / total_investment) * 100) | round(2) if total_investment > 0 else 0
-                }}%</strong>
-            on your invested capital.
-        </p>
-    </div>
-
     <div class="footer">
-        <p><strong>NOVA Finance Portal</strong> - Secure Investment Management</p>
-        <p>This is a computer-generated report and does not require a signature.</p>
-        <p>For queries or assistance, please contact your financial advisor.</p>
+        <p>© {{ now.year }} NOVA Finance | Investment Report</p>
     </div>
-</body>
-
-</html>

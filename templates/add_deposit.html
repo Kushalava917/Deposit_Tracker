@@ -1,21 +1,88 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Add Deposit for {{ user.username }}</h2>
-<form method="POST">
-    <label>Deposit Amount:</label><br>
-    <input type="number" step="0.01" name="amount" required><br><br>
+<style>
+    /* Page-specific styles for add_deposit */
+    .deposit-card {
+        max-width: 680px;
+        margin: 1.5rem auto;
+        border-radius: 0.75rem;
+        padding: 0;
+    }
 
-    <label>ROI (%):</label><br>
-    <input type="number" step="0.1" name="roi" required><br><br>
+    .deposit-card .card-body {
+        padding: 1.5rem;
+    }
 
-    <label>Duration (months):</label><br>
-    <input type="number" name="duration" required><br><br>
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem 1.5rem;
+    }
 
-    <label>Start Date:</label><br>
-    <input type="date" name="start_date" required><br><br>
+    @media (max-width: 576px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 
-    <button type="submit">Save Deposit</button>
-</form>
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-secondary);
+    }
 
-<a href="{{ url_for('admin_dashboard') }}">⬅ Back to Dashboard</a>
+    .page-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .muted-note {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+</style>
+
+<div class="card deposit-card">
+    <div class="card-header">
+        <h2 class="mb-0">Add Deposit for {{ user.username }}</h2>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            <div class="form-grid">
+                <div>
+                    <label class="form-label">Deposit Amount</label>
+                    <input class="form-control" type="number" step="0.01" name="amount" required
+                        placeholder="e.g. 5000.00">
+                </div>
+
+                <div>
+                    <label class="form-label">ROI (%)</label>
+                    <input class="form-control" type="number" step="0.1" name="roi" required placeholder="e.g. 6.5">
+                </div>
+
+                <div>
+                    <label class="form-label">Duration (months)</label>
+                    <input class="form-control" type="number" name="duration" required placeholder="e.g. 12">
+                </div>
+
+                <div>
+                    <label class="form-label">Start Date</label>
+                    <input class="form-control" type="date" name="start_date" required>
+                </div>
+            </div>
+
+            <div class="page-actions">
+                <a class="back-link" href="{{ url_for('admin_dashboard') }}">⬅ Back to Dashboard</a>
+                <div>
+                    <p class="muted-note mb-1">Review details before saving.</p>
+                    <button type="submit" class="btn btn-primary">Save Deposit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}
