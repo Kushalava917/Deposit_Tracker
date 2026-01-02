@@ -10,7 +10,15 @@ import os
 app = Flask(__name__)
 
 # ---------- CONFIG ----------
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "postgresql://deposit_tracker_db_6g2v_user:STNgzXeKQmRscU8Txv1NR1Eubt9raTNq@dpg-d5brlmili9vc73buf790-a/deposit_tracker_db_6g2v")
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+if "sslmode" not in DATABASE_URL:
+    DATABASE_URL += "?sslmode=require"
+
+app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = "nova_secret_key"
 app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
@@ -273,4 +281,4 @@ def create_admin():
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    app.run()
