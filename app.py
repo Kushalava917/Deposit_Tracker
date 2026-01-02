@@ -10,9 +10,13 @@ import os
 app = Flask(__name__)
 
 # ---------- CONFIG ----------
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "postgresql://deposit_tracker_db_user:YbjHDTaHKRR1kqYyFcPgV49BBxPDMGwd@dpg-d425bcripnbc73c299sg-a.oregon-postgres.render.com/deposit_tracker_db")
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "postgresql://deposit_tracker_db_6g2v_user:STNgzXeKQmRscU8Txv1NR1Eubt9raTNq@dpg-d5brlmili9vc73buf790-a/deposit_tracker_db_6g2v")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = "nova_secret_key"
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "pool_pre_ping": True,
+    "pool_recycle": 300,
+}
 
 db = SQLAlchemy(app)
 
